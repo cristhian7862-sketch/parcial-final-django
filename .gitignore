@@ -139,3 +139,6 @@ GitHub.sublime-settings
 *_deploy_key.pub
 ldap_litoral*
 *.pem
+
+# Archivos estaticos reunidos con collectstatic
+static_publico/

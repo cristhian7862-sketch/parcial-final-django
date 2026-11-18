@@ -1,0 +1,89 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Crear programa{% endblock %}
+
+{% block estilos %}
+    .campo { margin-bottom: 16px; }
+    .campo label { display: block; font-weight: 600; margin-bottom: 6px; }
+    .campo input[type="text"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--borde);
+        border-radius: 6px;
+        font-size: 1rem;
+    }
+    .campo input[type="text"]:focus { outline: 2px solid var(--primario); border-color: var(--primario); }
+    .campo.check label { display: inline; margin-left: 6px; }
+    .campo input[type="checkbox"] { width: 18px; height: 18px; vertical-align: middle; }
+    .errorlist { color: var(--error); margin: 6px 0 0; padding-left: 18px; font-size: .9rem; }
+    button {
+        background: var(--primario);
+        color: #fff;
+        border: 0;
+        padding: 12px 22px;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    button:hover { background: var(--primario-oscuro); }
+    .tabla-contenedor { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--borde); }
+    th { background: #eef2f7; }
+    .estado { padding: 2px 10px; border-radius: 12px; font-size: .85rem; }
+    .activo { background: #e7f6ee; color: var(--exito); }
+    .inactivo { background: #fdecea; color: var(--error); }
+{% endblock %}
+
+{% block contenido %}
+<section class="tarjeta">
+    <h2>Registrar programa</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for campo in form %}
+            <div class="campo{% if campo.widget_type == 'checkbox' %} check{% endif %}">
+                {% if campo.widget_type == 'checkbox' %}
+                    {{ campo }} {{ campo.label_tag }}
+                {% else %}
+                    {{ campo.label_tag }} {{ campo }}
+                {% endif %}
+                {{ campo.errors }}
+            </div>
+        {% endfor %}
+        <button type="submit">Guardar programa</button>
+    </form>
+</section>
+
+<section class="tarjeta">
+    <h2>Programas registrados ({{ programas|length }})</h2>
+    {% if programas %}
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Código</th><th>Nombre</th><th>Facultad</th><th>Estado</th></tr>
+                </thead>
+                <tbody>
+                    {% for p in programas %}
+                        <tr>
+                            <td>{{ p.id }}</td>
+                            <td>{{ p.codigo }}</td>
+                            <td>{{ p.nombre }}</td>
+                            <td>{{ p.facultad }}</td>
+                            <td>
+                                {% if p.estado %}
+                                    <span class="estado activo">Activo</span>
+                                {% else %}
+                                    <span class="estado inactivo">Inactivo</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Aún no hay programas registrados.</p>
+    {% endif %}
+</section>
+{% endblock %}
